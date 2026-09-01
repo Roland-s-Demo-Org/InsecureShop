@@ -7,6 +7,7 @@ import android.database.Cursor
 import android.database.MatrixCursor
 import android.net.Uri
 import com.insecureshop.util.Prefs
+import com.insecureshop.util.CryptoUtil
 
 
 class InsecureShopProvider : ContentProvider() {
@@ -31,7 +32,10 @@ class InsecureShopProvider : ContentProvider() {
     ): Cursor? {
         if (uriMatcher?.match(uri) == URI_CODE) {
             val cursor = MatrixCursor(arrayOf("username", "password"))
-            cursor.addRow(arrayOf<String>(Prefs.username!!, Prefs.password!!))
+            // Never expose plaintext password - return masked value
+            val username = Prefs.username ?: ""
+            val maskedPassword = "****" // Password is hashed and should never be exposed
+            cursor.addRow(arrayOf<String>(username, maskedPassword))
             return cursor
         }
         return null

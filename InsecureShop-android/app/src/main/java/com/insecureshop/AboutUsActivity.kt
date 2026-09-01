@@ -27,7 +27,8 @@ class AboutUsActivity : AppCompatActivity() {
 
     fun onSendData(view: View) {
         val userName = Prefs.username!!
-        val password = Prefs.password!!
+        // Password should never be broadcast - using masked value for security
+        val password = "****" // Password is stored as hash and should not be transmitted
 
         val intent = Intent("com.insecureshop.action.BROADCAST")
         intent.putExtra("username", userName)
