@@ -37,13 +37,14 @@ class LoginActivity : AppCompatActivity() {
         val password = mBinding.edtPassword.text.toString()
 
         Log.d("userName", username)
-        Log.d("password", password)
+        // Password logging removed for security - never log sensitive credentials
 
 
         var auth = Util.verifyUserNamePassword(username, password)
         if (auth) {
             Prefs.getInstance(applicationContext).username = username
-            Prefs.getInstance(applicationContext).password = password
+            // Store hashed password instead of plaintext
+            Prefs.getInstance(applicationContext).setPasswordHash(password)
             Util.saveProductList(this)
             val intent = Intent(this, ProductListActivity::class.java)
             startActivity(intent)
