@@ -6,6 +6,7 @@ import android.content.UriMatcher
 import android.database.Cursor
 import android.database.MatrixCursor
 import android.net.Uri
+import android.os.Binder
 import com.insecureshop.util.Prefs
 
 
@@ -30,8 +31,19 @@ class InsecureShopProvider : ContentProvider() {
         sortOrder: String?
     ): Cursor? {
         if (uriMatcher?.match(uri) == URI_CODE) {
-            val cursor = MatrixCursor(arrayOf("username", "password"))
-            cursor.addRow(arrayOf<String>(Prefs.username!!, Prefs.password!!))
+            // Verify the calling package is the same as this app
+            val callingPackage = context?.packageManager?.getNameForUid(Binder.getCallingUid())
+            val ownPackage = context?.packageName
+            
+            if (callingPackage != ownPackage) {
+                // Deny access to external callers
+                return null
+            }
+            
+            // Never expose password through content provider
+            val cursor = MatrixCursor(arrayOf("username"))
+            val username = Prefs.username ?: ""
+            cursor.addRow(arrayOf(username))
             return cursor
         }
         return null
