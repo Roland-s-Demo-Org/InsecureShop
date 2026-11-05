@@ -30,6 +30,8 @@ class AboutUsActivity : AppCompatActivity() {
         val password = Prefs.password!!
 
         val intent = Intent("com.insecureshop.action.BROADCAST")
+        // Restrict delivery to this application so other installed apps cannot receive the credentials.
+        intent.setPackage(packageName)
         intent.putExtra("username", userName)
         intent.putExtra("password", password)
         sendBroadcast(intent)
